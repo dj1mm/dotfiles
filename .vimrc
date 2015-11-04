@@ -3,6 +3,10 @@
 "  inspired from dougblack.io/words/a-good-vimrc.html
 " ---------------------------------------------------
 
+" Leader button is now <Space>. Put it here so that easymotion leader is 
+" oso <Space>.
+let mapleader="\<Space>"
+
 " Vundle configurations
 set nocompatible
 filetype off
@@ -17,9 +21,43 @@ Plugin 'bling/vim-airline'
 Plugin 'tpope/vim-surround'
 Plugin 'mhinz/vim-signify'
 Plugin 'bling/vim-bufferline'
+Plugin 'Valloric/YouCompleteMe'
+Plugin 'mbbill/undotree'
+Plugin 'SirVer/ultisnips'
+Plugin 'honza/vim-snippets'
+Plugin 'tomtom/tcomment_vim'
+Plugin 'LaTex-Box-Team/LaTex-Box'
+Plugin 'easymotion/vim-easymotion'
 
 call vundle#end()
 filetype plugin indent on
+
+" YouCompleteMe plugin configurations
+let g:ycm_global_ycm_extra_conf = '~/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
+
+" Undotree
+nnoremap <F5> :UndotreeToggle<CR>
+let g:undotree_SplitWidth = 40
+let g:undotree_DiffpanelHeight = 15
+let g:undotree_SetFocusWhenToggle = 1
+
+" Ultisnips
+let g:UltiSnipsExpandTrigger = '<c-j>'
+let g:UltiSnipsJumpForwardTrigger = '<c-j>'
+let g:UltiSnipsJumpBackwardTrigger = '<c-k>'
+
+" Latexbox
+let g:LatexBox_latexmk_async = 0
+noremap <Leader>lm :Latexmk<CR>
+noremap <Leader>lv :LatexView<CR>
+noremap <Leader>le :LatexErrors<CR>
+
+" Easy Motion plugin
+" Enable default mappings
+let g:EasyMotion_do_mapping = 1
+
+" Turn on case insensitive feature
+let g:EasyMotion_smartcase = 1
 
 " Vundle End
 
@@ -83,3 +121,9 @@ inoremap <up> <nop>
 inoremap <down> <nop>
 inoremap <left> <nop>
 inoremap <right> <nop>
+
+" Change highlighting because macVim looks terrible without
+" these setting
+hi CursorLine cterm=NONE ctermbg=236
+hi NonText guibg=black
+hi Normal guibg=black
