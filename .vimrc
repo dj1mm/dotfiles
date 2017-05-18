@@ -1,3 +1,4 @@
+
 " ---------------------------------------------------
 "  My .vimrc
 "  inspired from dougblack.io/words/a-good-vimrc.html
@@ -12,7 +13,6 @@ set nocompatible
 filetype off
 
 set rtp+=~/.vim/bundle/Vundle.vim
-set rtp+=~/.vim/bundle/ctrlp.vim
 call vundle#begin()
 
 Plugin 'VundleVim/Vundle.vim'
@@ -21,19 +21,17 @@ Plugin 'bling/vim-airline'
 Plugin 'tpope/vim-surround'
 Plugin 'mhinz/vim-signify'
 Plugin 'bling/vim-bufferline'
-Plugin 'Valloric/YouCompleteMe'
 Plugin 'mbbill/undotree'
 Plugin 'SirVer/ultisnips'
 Plugin 'honza/vim-snippets'
 Plugin 'tomtom/tcomment_vim'
 Plugin 'LaTex-Box-Team/LaTex-Box'
 Plugin 'easymotion/vim-easymotion'
+Plugin 'Valloric/YouCompleteMe'
+Plugin 'kien/ctrlp.vim'
 
 call vundle#end()
 filetype plugin indent on
-
-" YouCompleteMe plugin configurations
-let g:ycm_global_ycm_extra_conf = '~/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
 
 " Undotree
 nnoremap <F5> :UndotreeToggle<CR>
@@ -111,6 +109,9 @@ nnoremap <F3> :let @/ = ""<CR>
 cmap w!! %!sudo tee > /dev/null %
 cmap W!! %!sudo tee > /dev/null %
 
+" Python necessity: Shortcut to execute the script
+noremap <Leader>px :w! \| !python %<CR>
+
 " Cannot use left up right down keys hehe!
 nnoremap <up> <nop>
 nnoremap <down> <nop>
@@ -127,3 +128,63 @@ inoremap <right> <nop>
 hi CursorLine cterm=NONE ctermbg=236
 hi NonText guibg=black
 hi Normal guibg=black
+
+" Map buffer shortcuts
+nnoremap <Leader><Tab> :bnext<CR>
+nnoremap <Leader><S-Tab> :bprevious<CR>
+
+" When switching between buffers, do not forget the undotree history
+set hidden
+
+" Highlight column 80 in a gray line. Press F6
+if v:version >= 703
+
+function! Toggle80ColShow ()
+	if &cc==80
+		set cc=0
+	else
+		set cc=80
+	endif
+endfunction
+
+hi ColorColumn ctermbg=233 ctermfg=NONE guibg=233
+nnoremap <F6> :silent call Toggle80ColShow()<CR>
+
+endif
+
+" Highlight the current line as a gray something line
+set cursorline
+hi cursorline ctermbg=232 guibg=232
+
+function CountNumberOfBuffers ()
+	let cnt = 0
+	for nr in range (1, bufnr("$"))
+		if buflisted(nr) && !empty(bufname(nr))
+			let cnt += 1
+		endif
+	endfor
+	return cnt
+endfunction
+
+function QuitIfLastBuffer ()
+	if CountNumberOfBuffers() == 1
+		:q
+	else
+		:bd
+	endif
+endfunction
+
+function SaveAndQuitIfLastBuffer ()
+	if CountNumberOfBuffers() == 1
+		:wq
+	else
+		:w
+		:bd
+	endif
+endfunction
+
+nnoremap :q<CR> :call QuitIfLastBuffer()<CR>
+nnoremap :wq<CR> :call SaveAndQuitIfLastBuffer()<CR>
+
+highlight ExtraWhitespace ctermbg=darkred guibg=darkred
+match ExtraWhitespace /\s\+$/
