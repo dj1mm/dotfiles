@@ -27,8 +27,11 @@ Plugin 'honza/vim-snippets'
 Plugin 'tomtom/tcomment_vim'
 Plugin 'LaTex-Box-Team/LaTex-Box'
 Plugin 'easymotion/vim-easymotion'
-Plugin 'Valloric/YouCompleteMe'
 Plugin 'kien/ctrlp.vim'
+Plugin 'severin-lemaignan/vim-minimap'
+Plugin 'pseewald/vim-anyfold'
+Plugin 'mileszs/ack.vim'
+Plugin 'scrooloose/nerdtree'
 
 call vundle#end()
 filetype plugin indent on
@@ -57,10 +60,23 @@ let g:EasyMotion_do_mapping = 1
 " Turn on case insensitive feature
 let g:EasyMotion_smartcase = 1
 
-" Vundle End
-
 let g:ctrlp_map = '<c-p>'
 let g:ctrlp_cmd = 'CtrlP'
+
+" Vim Anyfold
+let anyfold_activate = 1
+set foldlevel=2
+
+" Vim Ack
+let g:ack_default_options = " -sH --smart-case"
+let g:ackhighlight = 1
+nmap <leader>a :Ack! ""<Left>
+nmap <leader>A :Ack! <C-r><C-w><CR>
+
+" NERDTree
+map <Leader>nt :NERDTreeToggle<CR>
+
+" Vundle End
 
 " enable syntax processing
 syntax on
@@ -123,9 +139,10 @@ inoremap <down> <nop>
 inoremap <left> <nop>
 inoremap <right> <nop>
 
-" Change highlighting because macVim looks terrible without
-" these setting
-hi CursorLine cterm=NONE ctermbg=236
+" Change highlig" Highlight the current line as a gray something line
+" because macVim looks terrible without these setting
+set cursorline
+hi CursorLine cterm=NONE ctermbg=235 guibg=gray15
 hi NonText guibg=black
 hi Normal guibg=black
 
@@ -147,14 +164,10 @@ function! Toggle80ColShow ()
 	endif
 endfunction
 
-hi ColorColumn ctermbg=233 ctermfg=NONE guibg=233
+hi ColorColumn ctermbg=darkred ctermfg=NONE guibg=darkred
 nnoremap <F6> :silent call Toggle80ColShow()<CR>
 
 endif
-
-" Highlight the current line as a gray something line
-set cursorline
-hi cursorline ctermbg=232 guibg=232
 
 function CountNumberOfBuffers ()
 	let cnt = 0
@@ -188,3 +201,43 @@ nnoremap :wq<CR> :call SaveAndQuitIfLastBuffer()<CR>
 
 highlight ExtraWhitespace ctermbg=darkred guibg=darkred
 match ExtraWhitespace /\s\+$/
+
+" Diff against disk <-- very usefull ^^. Just do `df` in your vim
+map <silent> df :silent call DC_DiffChanges()<CR>
+
+" Change the fold marker to something more useful
+function! DC_LineNumberOnly ()
+	if v:foldstart == 1
+		return '(No difference)'
+	else
+		return 'line ' . v:foldstart . ':'
+	endif
+endfunction
+
+" Track each buffer's initial state
+augroup DC_TrackInitial
+	autocmd!
+	autocmd BufReadPost,BufNewFile  *   if !exists('b:DC_initial_state')
+	autocmd BufReadPost,BufNewFile  *       let b:DC_initial_state = getline(1,'$')
+	autocmd BufReadPost,BufNewFile  *   endif
+augroup END
+
+function! DC_DiffChanges ()
+	diffthis
+	highlight Normal ctermfg=grey
+	let initial_state = b:DC_initial_state
+	set diffopt=context:1000000,filler,foldcolumn:0
+	set fillchars=fold:\
+	set foldcolumn=0
+	setlocal foldtext=DC_LineNumberOnly()
+	aboveleft vnew
+	normal 0
+	silent call setline(1, initial_state)
+	diffthis
+	set nocursorline
+	set diffopt=context:1000000,filler,foldcolumn:0
+	set fillchars=fold:\
+	set foldcolumn=0
+	setlocal foldtext=DC_LineNumberOnly()
+	nmap <silent><buffer> df :diffoff<CR>:q!<CR>:set diffopt& fillchars& foldcolumn=0<CR>:set nodiff<CR>:highlight Normal ctermfg=NONE<CR>
+endfunction
