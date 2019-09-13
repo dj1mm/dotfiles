@@ -287,3 +287,6 @@ endfunction
 " Normal backspacing
 set backspace=indent,eol,start
 
+" Allow shift backspace
+noremap! <C-?> <C-h>
+
