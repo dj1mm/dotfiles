@@ -10,7 +10,28 @@ export CLICOLOR=1
 
 # custom prompt!
 # PS1='[\u@\h \W]\$ ' # Default
-export PS1="\[$(tput setaf 1)\]\[$(tput bold)\]\n# \[$(tput sgr0)\]\[$(tput setaf 1)\]\u\[$(tput sgr0)\] @ \[$(tput setaf 2)\]\h\[$(tput sgr0)\] in \[$(tput setaf 3)\]\[$(tput bold)\]\w\[$(tput sgr0)\]\[$(tput setaf 7)\] [\t]\[$(tput setaf 6)\]\[$(tput bold)\]\n\\$ \[$(tput sgr0)\]"
+export PROMPT_COMMAND=set_prompt
+
+set_prompt()
+{
+  # Capture exit code of last command
+  local ex=$?
+
+  local username='\e[1;31m\u'
+  local at='\e[0m@'
+  local host='\e[0;32m\h'
+  local in='\e[0min'
+  local cwd='\e[1;34m\w'
+  local time='\e[0m[\t]'
+  local prompt='\e[0;33m\$\e[0m'
+
+  PS1=""
+
+  # [[ "$ex" -ne 0 ]] && PS1="\n\n\e[1;31mexited with code: $ex\e[0m\n"
+
+  # Set prompt content
+  PS1="$PS1\n$username $at $host $in $cwd $time\n$prompt "
+}
 
 # colourize ls
 eval $(dircolors ~/.dircolors)
