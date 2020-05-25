@@ -17,20 +17,20 @@ set_prompt()
   # Capture exit code of last command
   local ex=$?
 
-  local username='\e[1;31m\u'
-  local at='\e[0m@'
-  local host='\e[0;32m\h'
-  local in='\e[0min'
-  local cwd='\e[1;34m\w'
-  local time='\e[0m[\t]'
-  local prompt='\e[0;33m\$\e[0m'
+  local username='\[$(tput bold)\]\[\033[38;5;9m\]\u\[$(tput sgr0)\]'
+  local at='@'
+  local host='\[$(tput sgr0)\]\[\033[38;5;2m\]\h\[$(tput sgr0)\]'
+  local in='in'
+  local cwd='\[$(tput sgr0)\]\[$(tput bold)\]\[\033[38;5;12m\]\w\[$(tput sgr0)\]'
+  local time='[ \t ]'
+  local prompt='\[$(tput sgr0)\]\[\033[38;5;3m\]\\$\[$(tput sgr0)\] \[$(tput sgr0)\]'
 
   PS1=""
 
-  # [[ "$ex" -ne 0 ]] && PS1="\n\n\e[1;31mexited with code: $ex\e[0m\n"
+  [[ "$ex" -ne 0 ]] && PS1="\nexited with code: $ex\n"
 
   # Set prompt content
-  PS1="$PS1\n$username $at $host $in $cwd $time\n$prompt "
+  PS1="$PS1\n$username $at $host $in $cwd $time\n$prompt"
 }
 
 # colourize ls
