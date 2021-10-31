@@ -29,7 +29,7 @@ fi
 
 # set a fancy prompt (non-color, unless we know we "want" color)
 case "$TERM" in
-    xterm-color|*-256color) color_prompt=yes;;
+    xterm-color|*-256color|screen) color_prompt=yes;;
 esac
 
 # uncomment for a colored prompt
@@ -46,27 +46,28 @@ if [ -n "$force_color_prompt" ]; then
     fi
 fi
 
+# Colours come from https://gist.github.com/leesei/136b522eb9bb96ba45bd
 # Normal Colors
-black='\[$(tput sgr0)\]\e[0;30m'        # black
-red='\[$(tput sgr0)\]\e[0;31m'          # red
-green='\[$(tput sgr0)\]\e[0;32m'        # green
-yellow='\[$(tput sgr0)\]\e[0;33m'       # yellow
-blue='\[$(tput sgr0)\]\e[0;34m'         # blue
-purple='\[$(tput sgr0)\]\e[0;35m'       # purple
-cyan='\[$(tput sgr0)\]\e[0;36m'         # cyan
-white='\[$(tput sgr0)\]\e[0;37m'        # white
+ black='\[\033[0m\]\[\033[38;5;0m\]'  # black
+   red='\[\033[0m\]\[\033[38;5;1m\]'  # red
+ green='\[\033[0m\]\[\033[38;5;2m\]'  # green
+yellow='\[\033[0m\]\[\033[38;5;3m\]'  # yellow
+  blue='\[\033[0m\]\[\033[38;5;4m\]'  # blue
+purple='\[\033[0m\]\[\033[38;5;5m\]'  # purple
+  cyan='\[\033[0m\]\[\033[38;5;6m\]'  # cyan
+ white='\[\033[0m\]\[\033[38;5;7m\]'  # white
 
 # Bold
-BLACK='\[$(tput bold)\]\e[1;30m'        # Black
-RED='\[$(tput bold)\]\e[1;31m'          # Red
-GREEN='\[$(tput bold)\]\e[1;32m'        # Green
-YELLOW='\[$(tput bold)\]\e[1;33m'       # Yellow
-BLUE='\[$(tput bold)\]\e[1;34m'         # Blue
-PURPLE='\[$(tput bold)\]\e[1;35m'       # Purple
-CYAN='\[$(tput bold)\]\e[1;36m'         # Cyan
-WHITE='\[$(tput bold)\]\e[1;37m'        # White
+ BLACK='\[\033[1m\]\[\033[38;5;0m\]'  # Black
+   RED='\[\033[1m\]\[\033[38;5;1m\]'  # Red
+ GREEN='\[\033[1m\]\[\033[38;5;2m\]'  # Green
+YELLOW='\[\033[1m\]\[\033[38;5;3m\]'  # Yellow
+  BLUE='\[\033[1m\]\[\033[38;5;4m\]'  # Blue
+PURPLE='\[\033[1m\]\[\033[38;5;5m\]'  # Purple
+  CYAN='\[\033[1m\]\[\033[38;5;6m\]'  # Cyan
+ WHITE='\[\033[1m\]\[\033[38;5;7m\]'  # White
 
-END="\e[m"              # Color Reset
+END="\[\033[0m\]"                     # Color Reset
 
 
 echo -e "Hello BASH ${BASH_VERSION%.*}"
@@ -74,7 +75,7 @@ date
 
 function _exit()              # Function to run upon exit of shell.
 {
-    echo -e "Bye BASH"bash
+    echo -e "Bye BASH"
     date
 }
 trap _exit EXIT
